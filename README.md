@@ -61,52 +61,66 @@ create a new database with the following commands.
 Installation Steps
 ============
 
-1. Create a virtual environment using the following commands
-    .. code-block:: python
-    
-        virtualenv -p python3 eeazycrm
-        source eeazycrm/bin/activate
-        
-2. Add github repository using the following command
+Step 1: Create and Navigate to the Project Directory
+bash
+mkdir eeazycrm
+cd eeazycrm
 
-    .. code-block:: python
-    
-        cd eeazycrm
-        git remote add origin https://github.com/jagjot2008/EeazyCRM
-        git pull origin master
-        
-3. Now create the configuration file using the command
-    .. code-block:: python
-    
-        cp config_vars.example config_vars.py
-        
-    Open the config_vars.py file and add the database connection 
-    parameters in the PRODUCTION DATABASE SETTINGS (Default). 
-    
-    You can also setup the development and testing settings if you wish to.
-        
-3. Install the dependencies
-   .. code-block:: python
+Step 2: Initialize Git Repository and Pull Project Code
+bash
+git init
+git remote add origin https://github.com/jagjot2008/EeazyCRM.git
+git pull origin master
 
-       pip3 install -r requirements.txt
+Step 3: Create and Activate a Virtual Environment
+bash
+virtualenv -p python3 eeazycrm_env
+source eeazycrm_env/bin/activate
 
-4. Create the following environment variables
-   .. code-block:: python
-   
-       EMAIL_USER = <your username>
-       EMAIL_PASS = <your password>
-       
-   If you want to run flask in development or testing mode set
-   the following environment variable in addition to the above.
-   .. code-block:: python
-   
-       FLASK_ENV = development, or
-       FLASK_ENV = testing
-   
-5. Run the command
-   .. code-block:: python
-   
-       python3 run.py
+Step 4: Install the Dependencies
+bash
+pip3 install -r requirements.txt
+
+Step 5: Set Up PostgreSQL
+Ensure PostgreSQL is running, then open the terminal and execute the following commands:
+
+bash
+psql
+CREATE DATABASE eeazy_crm;
+
+Step 6: Create the Configuration File from Example
+bash
+cp config_vars.example config_vars.py
+Open the config_vars.py file and add the PostgreSQL database connection credentials. For example:
+
+python
+PRODUCTION_DATABASE_URI = 'postgresql://username:password@localhost/eeazy_crm'
+You can also set up development and testing configurations if needed.
+
+Step 7: Set Environment Variables
+Configure the environment variables needed for the application:
+
+bash
+export EMAIL_USER=<your email username>
+export EMAIL_PASS=<your email password>
+export FLASK_ENV=development  # or 'testing'
+If you are using Windows, use set instead of export:
+
+bash
+set EMAIL_USER=<your email username>
+set EMAIL_PASS=<your email password>
+set FLASK_ENV=development
+
+Step 8: Run the Application for the First Time (Installation Wizard)
+bash
+python3 run.py
+This will run the installation wizard. Follow the on-screen instructions.
+
+Step 9: Restart the Application After Installation
+Once the installation is complete, stop the application and restart it:
+
+bash
+python3 run.py
        
    This will run the installation wizard. Follow the instructions
    in the wizard and after finishing installation, stop the 
