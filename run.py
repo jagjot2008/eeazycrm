@@ -1,3 +1,5 @@
+# main.py (entry point)
+
 from eeazycrm import create_app
 
 app = create_app()
