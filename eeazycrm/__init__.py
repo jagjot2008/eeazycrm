@@ -5,20 +5,18 @@ from flask_login import LoginManager
 
 import os
 
-from .config import DevelopmentConfig, TestConfig, ProductionConfig
+# Import configuration classes using absolute imports
+from eeazycrm.config import DevelopmentConfig, TestConfig, ProductionConfig
 
-# database handle
+# Database handle
 db = SQLAlchemy(session_options={"autoflush": False})
 
-# encryptor handle
+# Encryptor handle
 bcrypt = Bcrypt()
 
-# manage user login
+# Manage user login
 login_manager = LoginManager()
-
-# function name of the login route that
-# tells the path which facilitates authentication
-login_manager.login_view = 'users.login'
+login_manager.login_view = 'users.login'  # Function name of the login route
 
 
 def run_install(app_ctx):
@@ -30,6 +28,7 @@ def run_install(app_ctx):
 def create_app(config_class=ProductionConfig):
     app = Flask(__name__, instance_relative_config=True)
 
+    # Set the configuration class based on the environment variable
     if os.getenv('FLASK_ENV') == 'development':
         config_class = DevelopmentConfig()
     elif os.getenv('FLASK_ENV') == 'production':
@@ -46,7 +45,7 @@ def create_app(config_class=ProductionConfig):
     login_manager.init_app(app)
 
     with app.app_context():
-        # check if the config table exists, otherwise run install
+        # Check if the config table exists; otherwise, run install
         engine = db.get_engine(app)
         if not engine.dialect.has_table(engine, 'app_config'):
             return run_install(app)
@@ -56,14 +55,13 @@ def create_app(config_class=ProductionConfig):
             if not row:
                 return run_install(app)
 
-        # application is installed so extends the config
+        # Application is installed, so extend the config
         from eeazycrm.settings.models import AppConfig, Currency, TimeZone
         app_cfg = AppConfig.query.first()
         app.config['def_currency'] = Currency.get_currency_by_id(app_cfg.default_currency)
         app.config['def_tz'] = TimeZone.get_tz_by_id(app_cfg.default_timezone)
 
-        # include the routes
-        # from eeazycrm import routes
+        # Include the routes
         from eeazycrm.main.routes import main
         from eeazycrm.users.routes import users
         from eeazycrm.leads.routes import leads
@@ -74,7 +72,7 @@ def create_app(config_class=ProductionConfig):
         from eeazycrm.settings.app_routes import app_config
         from eeazycrm.reports.routes import reports
 
-        # register routes with blueprint
+        # Register routes with blueprints
         app.register_blueprint(main)
         app.register_blueprint(users)
         app.register_blueprint(settings)
@@ -84,6 +82,10 @@ def create_app(config_class=ProductionConfig):
         app.register_blueprint(contacts)
         app.register_blueprint(deals)
         app.register_blueprint(reports)
+
         return app
 
 
+if __name__ == "__main__":
+    app = create_app()
+    app.run(debug=True)  # Enable debug mode for development

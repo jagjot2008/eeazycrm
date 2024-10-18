@@ -1,6 +1,6 @@
 FROM python:3.6
 ENV PYTHONUNBUFFERED 1
-MAINTAINER Jagjot Singh <jagjotsingh2008@gmail.com>
+LABEL MAINTAINER ="Jagjot Singh <jagjotsingh2008@gmail.com>
 RUN MKDIR /app
 WORKDIR /app
 COPY . /app/
